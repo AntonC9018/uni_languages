@@ -69,35 +69,39 @@ Mai formal, lanțul mea de mai sus se scrie astfel, și se numește *istoria com
 
 $ (q_0, abc) \vdash (q_1, bc) \vdash (q_0, c) $
 
-Așa că $ q_0 \neq q_3 $, iar $ c \neq \epsilon $, cuvântul nu este acceptat.
+Așa că $ q_0 \neq q_3 $, iar $ c \neq \varepsilon $, cuvântul nu este acceptat.
 
 
 2. **bc**
 
-Computația potențială $ (q_0, bc) \vdash (q_1, c) $ nu ne aduce la configurația $ (q_3, \epsilon) $, deci nu este acceptată.
+Computația potențială $ (q_0, bc) \vdash (q_1, c) $ nu ne aduce la configurația $ (q_3, \varepsilon) $, deci nu este acceptată.
 Aici am încercat tranziția $ (q_0, bc) \vdash (q_1, c) $, dar mai avem o posibilitate, $ (q_0, bc) \vdash (q_2, c) $.
 
-Dacă folosim această tranziție, obținem istoria computațională $ (q_0, bc) \vdash (q_2, c) \vdash (q_3, \epsilon) $.
+Dacă folosim această tranziție, obținem istoria computațională $ (q_0, bc) \vdash (q_2, c) \vdash (q_3, \varepsilon) $.
 Având în vedere că starea $q_3$ este starea terminală, cuvântul **bc** este acceptat.
 
-S-ar putea considera și computația $ (q_2, c) \vdash (q_0, \epsilon) $.
-Această posibilitate însă există doar deoarece automatul este nedeterminist (cel puțin în forma dată), și în acest caz posibilitatea dată nu ne interesează, deoarece nu ne aduce la configurația $ (q_3, \epsilon) $.
+S-ar putea considera și computația $ (q_2, c) \vdash (q_0, \varepsilon) $.
+Această posibilitate însă există doar deoarece automatul este nedeterminist (cel puțin în forma dată), și în acest caz posibilitatea dată nu ne interesează, deoarece nu ne aduce la configurația $ (q_3, \varepsilon) $.
 
 
-3. $ \epsilon $
+3. $ \varepsilon $
 
 $ q_0 \neq q_3 $, deci cuvântul nu este acceptat.
 
 
 4. $ bcbc $
 
-$ (q_0, bcbc) \vdash (q_2, cbc) \vdash (q_0, bc) \vdash (q_2, c) \vdash (q_3, \epsilon) $, cuvântul este acceptat.
+$ (q_0, bcbc) \vdash (q_2, cbc) \vdash (q_0, bc) \vdash (q_2, c) \vdash (q_3, \varepsilon) $, cuvântul este acceptat.
 
 
 5. $ c $
 
 $ (q_0, c) $ oprește automatul finit, cuvântul nu este acceptat.
 
+
+6. $ aacbc $
+
+$ (q_0, aacbc) \vdash (q_1, acbc) \vdash (q_2, cbc) \vdash (q_0, bc) \vdash (q_2, c) \vdash (q_3, \varepsilon) $, cuvântul este acceptat.
 
 
 > 3\. Să se construiască gramatica regulată echivalentă.
@@ -115,7 +119,7 @@ $ P =
 S \rightarrow Ac \\\\
 A \rightarrow Cb|Ba \\\\
 B \rightarrow Aa|Ca|Cb \\\\
-C \rightarrow \epsilon|Bb|Ac \\\\
+C \rightarrow \varepsilon|Bb|Ac \\\\
 \end{cases}
 $
 
@@ -139,18 +143,29 @@ De aceea avem aici și cuvântul epsilon (deoarece începem de la $q_0$), dar av
 $
 S \xrightarrow{S \rightarrow Ac} Ac \\\\
 Ac \xrightarrow{A \rightarrow Cb} Cbc \\\\
-Cbc \xrightarrow{C \rightarrow \epsilon} bc \\\\
+Cbc \xrightarrow{C \rightarrow \varepsilon} bc \\\\
 $
 
 
-2. **bcbc**
+2. **aacbc**
+
+$
+S \xrightarrow{S \rightarrow Ac} Ac \\\\
+Ac \xrightarrow{A \rightarrow Cb} Cbc \\\\
+Cbc \xrightarrow{C \rightarrow Ac} Acbc \\\\
+Acbc \xrightarrow{A \rightarrow Ba} Bacbc \\\\
+Bacbc \xrightarrow{C \rightarrow Ca} Cacbc \\\\
+Cacbc \xrightarrow{C \rightarrow \varepsilon} aacbc \\\\
+$
+
+3. **bcbc**
 
 $
 S \xrightarrow{S \rightarrow Ac} Ac \\\\
 Ac \xrightarrow{A \rightarrow Cb} Cbc \\\\
 Cbc \xrightarrow{C \rightarrow Ac} Acbc \\\\
 Acbc \xrightarrow{A \rightarrow Cb} Cbcbc \\\\
-Cbcbc \xrightarrow{C \rightarrow \epsilon} bcbc \\\\
+Cbcbc \xrightarrow{C \rightarrow \varepsilon} bcbc \\\\
 $
 
 > 5\. Să se construiască arborele de derivare pentru fiecare din cuvinte. 
@@ -165,7 +180,20 @@ A1[A] --> A3[C] & A4[b]
 A3[C] --> A5["ε"]
 ```
 
-1. **bcbc**
+2. **aacbc**
+
+```mermaid
+flowchart TD
+
+A0[S] --> A1[A] & A2[c]
+A1[A] --> A3[C] & A4[b]
+A3[C] --> A5[A] & A6[c]
+A5[A] --> A7[B] & A8[a]
+A7[B] --> A9[C] & A10[a]
+A9[C] --> A11["ε"]
+```
+
+3. **bcbc**
 
 ```mermaid
 flowchart TD
@@ -190,7 +218,7 @@ Ideea algorimului este, neformal, de a urmări toate variantele tranzițiilor po
 
 Deci algoritmul este următorul:
 
-1. Colapsăm stărea inițială cu toate stările accesibile după tranziții $ \epsilon $ într-o singură mulțime. În cazul nostru, $ q_0 $ nu are vecini accesibile după tranziții $ \epsilon $, deci mulțimea inițială $ q ^ { \prime } _ { 0 } = \\{ q_0 \\} $. Această mulțime o considerăm ca starea inițială a noului automat.
+1. Colapsăm stărea inițială cu toate stările accesibile după tranziții $ \varepsilon $ într-o singură mulțime. În cazul nostru, $ q_0 $ nu are vecini accesibile după tranziții $ \varepsilon $, deci mulțimea inițială $ q ^ { \prime } _ { 0 } = \\{ q_0 \\} $. Această mulțime o considerăm ca starea inițială a noului automat.
 
 2. Pentru fiecare stare din graful nou, $ q ^ { \prime } _ { i } $, conectăm $ q ^ { \prime } _ { i } $ cu $ q ^ { \prime } _ { j } $ cu tranziția după simbolul $ x \in \Sigma $, creând acest $ q ^ { \prime } _ { j } $ dacă nu există deja în automatul nou, după regula că $ q ^ { \prime } _ { j } $ va conține toate stările din automatul inițial (nenormalizat) care pot fi atinse din cel puțin o stare $ q_n $ din $ q ^ { \prime } _ { i } $ prin intermediul tranziției $ x $ în automatul inițial. În alte cuvinte, $ q_m \in q ^ { \prime } _ { j } \iff \exists q_n \in q ^ { \prime } _ { i } \mid q_b \in \delta(q_n, x) $. În alte cuvinte, $ q ^ { \prime } _ { j } $ va conține uniunea mulțimelor $ \delta(q_n, x), \forall q_n \in q ^ { \prime } _ { i } $. Important, $ q ^ { \prime } _ { j } $ este nevid.
 
@@ -260,17 +288,41 @@ Q12-- "c" -->Q03
 
 1. **bc**.
 
-$ (q ^ { \prime } _ 0, bc) \vdash (q ^ { \prime } _ 3, c) \vdash (q ^ { \prime } _ 4, \epsilon) $.
+$ (q ^ { \prime } _ 0, bc) \vdash (q ^ { \prime } _ 3, c) \vdash (q ^ { \prime } _ 4, \varepsilon) $.
 
 Starea $ q ^ { \prime } _ 4 \in F ^ { \prime } $, de aceea cuvântul se acceptă.
 
 
 2. **bcbc**.
 
-$ (q ^ { \prime } _ 0, bcbc) \vdash (q ^ { \prime } _ 3, cbc) \vdash (q ^ { \prime } _ 4, bc) \vdash (q ^ { \prime } _ 3, c) \vdash (q ^ { \prime } _ 4, \epsilon) $.
+$ (q ^ { \prime } _ 0, bcbc) \vdash (q ^ { \prime } _ 3, cbc) \vdash (q ^ { \prime } _ 4, bc) \vdash (q ^ { \prime } _ 3, c) \vdash (q ^ { \prime } _ 4, \varepsilon) $.
 
 Starea $ q ^ { \prime } _ 4 \in F ^ { \prime } $, de aceea cuvântul se acceptă.
 
 
 
 > 9\. Să se construiască reprezentarea uvw pentru trei cuvinte recunoscute de automatul finit determinist aplicând lema de pompare.
+
+1. **bc**.
+
+$ u = b, v = cb, w = c $
+
+$ b (bc)^i c \in L, i \geq 0 $
+
+
+1. **bcbc**.
+
+Același răspuns.
+
+3. **aacbc**
+
+$ u = aa, v = cb, w = c $
+
+$ aa (bc)^i c \in L, i \geq 0 $
+
+
+3. **baabaac**
+
+$ u = ba, v = abaa, w = c $
+
+$ ba (abaa)^i c \in L, i \geq 0 $
