@@ -321,7 +321,7 @@ $ u = aa, v = cb, w = c $
 $ aa (bc)^i c \in L, i \geq 0 $
 
 
-3. **baabaac**
+4. **baabaac**
 
 $ u = ba, v = abaa, w = c $
 
