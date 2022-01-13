@@ -108,7 +108,7 @@ $ (q_0, aacbc) \vdash (q_1, acbc) \vdash (q_2, cbc) \vdash (q_0, bc) \vdash (q_2
 
 $ G = (V_T, V_N, P, S) $
 
-$ V_T = \\{ a, b, c \\}^{*} $
+$ V_T = \\{ a, b, c, \varepsilon \\} $
 
 $ V_N = \\{ S, A, B, C \\} $
 
