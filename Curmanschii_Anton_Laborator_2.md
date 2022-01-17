@@ -88,19 +88,35 @@ flowchart TD
 A0[E] --> A1[c]
 ```
 
+
+$
+E \xrightarrow{ E \rightarrow 0A } 0A
+\xrightarrow{ A \rightarrow aB } 0aB 
+\xrightarrow{ B \rightarrow bB } 0abB 
+\xrightarrow{ B \rightarrow bB } 0abbB 
+\xrightarrow{ B \rightarrow c } 0abbc
+$
+
+```mermaid
+flowchart TD
+A0[E] --> A1[0] & A2[A]
+A2[A] --> A3[a] & A4[B]
+A4[B] --> A5[b] & A6[B]
+A6[B] --> A7[b] & A8[B]
+A8[B] --> A9[c]
+```
+
 > 3\. Să se construiască automatul finit echivalent.
 
 Automatul finit: $ 
 AF = (Q, \Sigma, \delta, q_E, F), \\\\
-Q = \\{ q_E, q_A, q_{BD}, q_B, q_D, q_C, q_Z \\},   \\\\
+Q = \\{ q_E, q_A, q_B, q_D, q_C, q_Z \\},   \\\\
 \Sigma = \\{ a, b, 0, 1 \\},         \\\\
 F = \\{ q_Z \\},                  \\\\
 \delta(q_E, c) =\\{ q_Z \\}, \delta(q_E, 0) = \\{ q_A \\}, \\\\ 
-\delta(q_A, a) = \\{ q_{BD} \\}, \\\\
-\delta(q_{BD}, b) = \\{ q_B \\}, \delta(q_{BD}, a) = \\{ q_D \\}, \\\\
-\delta(q_{BD}, 0) = \\{ q_C \\}, \delta(q_{BD}, 1) = \\{ q_C \\}, \\\\
-\delta(q_{B}, b) = \\{ q_B \\}, \delta(q_{B}, 1) = \\{ q_C \\}, \\\\
-\delta(q_{D}, a) = \\{ q_D \\}, \delta(q_{D}, 0) = \\{ q_C \\}, \\\\
+\delta(q_A, a) = \\{ q_B, q_D \\}, \\\\
+\delta(q_{B}, b) = \\{ q_B \\}, \delta(q_{B}, 1) = \\{ q_C \\}, \delta(q_{B}, c) = \\{ q_Z \\}, \\\\
+\delta(q_{D}, a) = \\{ q_D \\}, \delta(q_{D}, 0) = \\{ q_C \\}, \delta(q_{D}, c) = \\{ q_Z \\}, \\\\
 \delta(q_{C}, c) = \\{ q_Z \\}.
 $
 
@@ -109,7 +125,6 @@ flowchart LR
 
 E(["q_E"])
 A(["q_A"])
-BD(["q_BD"])
 B(["q_B"])
 D(["q_D"])
 C(["q_C"])
@@ -118,12 +133,7 @@ Z(["q_Z"])
 E-- c -->Z
 E-- 0 -->A
 
-A-- a -->BD
-
-BD-- "b" -->B
-BD-- "a" -->D
-
-BD-- "0|1" -->C
+A-- a -->B & D
 
 B-- "b" -->B
 D-- "a" -->D
@@ -131,35 +141,48 @@ D-- "a" -->D
 B-- "1" -->C
 D-- "0" -->C
 
+B & D-- c -->Z
+
 C-- c -->Z
 ```
 
+
 > 4\. Printr-un calcul de configurații să se demonstreze că formele propoziționale generate de gramatică sunt acceptate și de automatul finit construit.
 
+Și în a doua variantă a automatului:
 
 1. **0a1c**
 
-$ (q_E, 0a1c) \vdash (q_A, a1c) \vdash (q_{BD}, 1c) \vdash (q_{C}, c) \vdash (q_{Z}, \varepsilon) $
+$ (q_E, 0a1c) \vdash (q_A, a1c) \vdash (q_D, 1c) \vdash (q_C, c) \vdash (q_Z, \varepsilon) $
 
 2. **0aa0c**
 
-$ (q_E, 0aa0c) \vdash (q_A, aa0c) \vdash (q_{BD}, a0c) \vdash (q_{D}, 0c) \vdash (q_{C}, c) \vdash (q_{Z}, \varepsilon) $
+$ (q_E, 0aa0c) \vdash (q_A, aa0c) \vdash (q_D, a0c) \vdash (q_D, 0c) \vdash (q_C, c) \vdash (q_Z, \varepsilon) $
 
 3. **c**
 
 $ (q_E, c) \vdash (q_Z, \varepsilon) $
 
+4. **0abbc**
+
+$ (q_E, 0abbc) \vdash (q_A, abbc) \vdash (q_B, bbc) \vdash (q_B, bc) \vdash (q_B, c) \vdash (q_Z, \varepsilon) $
+
 
 > 5\. Să se scrie expresia regulată a cuvintelor generate de gramatica dată.
 
-Un *c* sau (*ab* urmat de ((*0* sau *1*) sau (*b*, orice număr de *b*, *1*) sau (*a*, orice număr de *a*, *0*)) urmat de *c*).
 
-$ c + ab ((0 + 1) + (b b^{\star} 1) + (a a^{\star} 0)) c $
+Un *c* sau (*0* urmat de (*a*, ((orice număr de *b*, (*1c* sau *c*)) sau (orice număr de *a*, (*0c* sau *c*))))).
+
+$ c + (0a(b^{\star} (1c + c) + a^{\star} (0c + c))) $
 
 Parantezele pot fi omise.
 
-$ c + ab (0 + 1 + b b^{\star} 1 + a a^{\star} 0) c $
+$ c + 0a(b^{\star} (1c + c) + a^{\star} (0c + c)) $
 
-Pentru claritate poate fi folosit și simbolul operatorul de concatenare, ".".
+Pentru claritate poate fi folosit și simbolul operatorului de concatenare, ".".
 
-$ c + a.b.(0 + 1 + b.b^{\star}.1 + a.a^{\star}.0).c $
+$ c + 0.a.(b^{\star}.(1.c + c) + a^{\star}.(0.c + c)) $
+
+Dacă se dorește să se folosească și $\varepsilon$:
+
+$ (\varepsilon + 0a(b^{\star}(1 + \varepsilon) + a^{\star}(0 + \varepsilon))c $
