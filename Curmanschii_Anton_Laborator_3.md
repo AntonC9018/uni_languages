@@ -22,9 +22,9 @@ Tema: **$\varepsilon$-Producții**
 
 $ G = (V_T, V_N, P, S) $
 
-$ V_T = \\{ \lnot, \land, \bot, i, j, k, m, \varepsilon \\} $
+$ V_T = \\{ \lnot, \land, \bot, i, j, k, l, m, \varepsilon \\} $
 
-$ V_N = \\{ R, T, I, F, K \\} $
+$ V_N = \\{ R, T, F, K \\} $
 
 $ S = R $
 

@@ -112,8 +112,6 @@ $ V_T = \\{ a, b, c, \varepsilon \\} $
 
 $ V_N = \\{ S, A, B, C \\} $
 
-$ S = N $
-
 $ P =
 \begin{cases}
 S \rightarrow Ac \\\\
@@ -316,9 +314,9 @@ Același răspuns.
 
 3. **aacbc**
 
-$ u = aa, v = cb, w = c $
+$ u = aa, v = cb, w = \varepsilon $
 
-$ aa (bc)^i c \in L, i \geq 0 $
+$ aac (bc)^i \in L, i \geq 0 $
 
 
 4. **baabaac**
